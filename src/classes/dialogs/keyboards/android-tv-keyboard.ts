@@ -41,6 +41,8 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 			return;
 		}
 
+		console.log(this.action)
+
 		const payload = {
 			entity_id: this.action.remote_id,
 			command: [`text:${text}`, 'ENTER'],

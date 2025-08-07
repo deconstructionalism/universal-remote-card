@@ -141,6 +141,7 @@ export class BaseKeyboard extends BaseDialog {
 		let pasteHandler: ((e: ClipboardEvent) => void) | undefined;
 		let forceCursorToEndHandler: ((e: Event) => void) | undefined;
 
+		console.log(this.action, "inside basekeyboard")
 		switch (this.action.action) {
 			case 'search':
 				placeholder = 'Search for something...';
@@ -150,7 +151,7 @@ export class BaseKeyboard extends BaseDialog {
 				)}${this.buildDialogButton('Search', this.search)}`;
 				break;
 			case 'textbox':
-				placeholder = 'Send something...';
+				placeholder = 'Send something...'	;
 				buttons = html`${this.buildDialogButton(
 					'Close',
 					this.closeDialog,
