@@ -2,6 +2,8 @@ import { PropertyValues } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { BaseKeyboard } from './base-keyboard';
 
+const pause = (delay: number) =>
+	new Promise((resolve) => setTimeout(resolve, delay));
 @customElement('android-tv-keyboard')
 export class AndroidTVKeyboard extends BaseKeyboard {
 	keyMap = {
@@ -28,11 +30,11 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 	}
 
 	sendSearch(text: string) {
-		console.log('inside sendSearch', text)
+		console.log('inside sendSearch', text);
 		if (!this.searchReady) {
-			console.log('Search not ready')
+			console.log('Search not ready');
 			setTimeout(() => {
-				console.log('sent search after timeout', text)
+				console.log('sent search after timeout', text);
 				this.sendSearch(text);
 			}, 100);
 			return;
@@ -42,10 +44,14 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 			entity_id: this.action.remote_id,
 			command: [`text:${text}`, 'ENTER'],
 			delay_secs: 0.4,
-		}
-		console.log('this.hass.callService payload', payload)
+		};
+		console.log('this.hass.callService payload');
 
-		this.hass.callService('remote', 'send_command', payload);
+		this.hass.callService('remote', 'send_command', {
+			entity_id: this.action.remote_id,
+			command: [`text:${text}`, 'ENTER'],
+			delay_secs: 0.4,
+		});
 	}
 
 	updated(changedProperties: PropertyValues) {
@@ -62,24 +68,24 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 					entity_id: this.action.remote_id,
 					command: 'SEARCH',
 				})
-				.then(() => {
-					setTimeout(
-						() =>
-							this.hass
-								.callService('remote', 'send_command', {
-									entity_id: this.action.remote_id,
-									command: [
-										'DPAD_LEFT',
-										'DPAD_LEFT',
-										'DPAD_CENTER',
-										'BACK'
-									],
-									delay_secs: 0.4,
-								})
-								.then(() => (this.searchReady = true)),
-						1000,
-					);
-				});
+				.then(() => pause(1000))
+				.then(() =>
+					this.hass.callService('remote', 'send_command', {
+						entity_id: this.action.remote_id,
+						command: ['DPAD_LEFT', 'DPAD_LEFT', 'DPAD_CENTER'],
+						delay_secs: 0.4,
+					}),
+				)
+				.then(() => pause(1000))
+				.then(() =>
+					this.hass.callService('remote', 'sendCommand', {
+						entity_id: this.action.remote_id,
+						command: ['BACK'],
+						delay_secs: 0.4,
+					}),
+				)
+				.then(() => (this.searchReady = true));
 		}
 	}
 }
+
