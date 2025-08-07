@@ -72,6 +72,7 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 										'DPAD_LEFT',
 										'DPAD_LEFT',
 										'DPAD_CENTER',
+										'BACK'
 									],
 									delay_secs: 0.4,
 								})
