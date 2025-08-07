@@ -28,18 +28,24 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 	}
 
 	sendSearch(text: string) {
+		console.log('inside sendSearch', text)
 		if (!this.searchReady) {
+			console.log('Search not ready')
 			setTimeout(() => {
+				console.log('sent search after timeout', text)
 				this.sendSearch(text);
 			}, 100);
 			return;
 		}
 
-		this.hass.callService('remote', 'send_command', {
+		const payload = {
 			entity_id: this.action.remote_id,
 			command: [`text:${text}`, 'ENTER'],
 			delay_secs: 0.4,
-		});
+		}
+		console.log('this.hass.callService payload', payload)
+
+		this.hass.callService('remote', 'send_command', payload);
 	}
 
 	updated(changedProperties: PropertyValues) {
