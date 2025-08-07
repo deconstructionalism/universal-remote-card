@@ -55,7 +55,7 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 		});
 	}
 
-	updated(changedProperties: PropertyValues) {
+	async updated(changedProperties: PropertyValues) {
 		super.updated(changedProperties);
 		if (
 			changedProperties.has('open') &&
@@ -64,35 +64,28 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 			this.action.action == 'search'
 		) {
 			this.searchReady = false;
-			this.hass
-				.callService('remote', 'send_command', {
-					entity_id: this.action.remote_id,
-					command: 'SEARCH',
-				})
-				.then(() => {
-					console.log('pausing for 1000');
-					pause(1000);
-				})
-				.then(() =>
-					this.hass.callService('remote', 'send_command', {
-						entity_id: this.action.remote_id,
-						command: ['DPAD_LEFT', 'DPAD_LEFT', 'DPAD_CENTER'],
-						delay_secs: 0.4,
-					}),
-				)
-				.then(() => {
-					console.log('pausing for 1000');
-					pause(1000);
-				})
-				.then(() => {
-					console.log('pressing back');
-					return this.hass
-						.callService('remote', 'sendCommand', {
-							entity_id: this.action.remote_id,
-							command: ['BACK'],
-						})
-						.then(() => (this.searchReady = true));
-				});
+
+			await this.hass.callService('remote', 'send_command', {
+				entity_id: this.action.remote_id,
+				command: 'SEARCH',
+			});
+
+			await pause(1000);
+
+			await this.hass.callService('remote', 'send_command', {
+				entity_id: this.action.remote_id,
+				command: ['DPAD_LEFT', 'DPAD_LEFT', 'DPAD_CENTER'],
+				delay_secs: 0.4,
+			});
+
+			await pause(1000);
+
+			await this.hass.callService('remote', 'sendCommand', {
+				entity_id: this.action.remote_id,
+				command: ['BACK'],
+			});
+
+			this.searchReady = true;
 		}
 	}
 }
