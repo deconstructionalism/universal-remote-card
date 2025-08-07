@@ -4,6 +4,7 @@ import { BaseKeyboard } from './base-keyboard';
 
 const pause = (delay: number) =>
 	new Promise((resolve) => setTimeout(resolve, delay));
+
 @customElement('android-tv-keyboard')
 export class AndroidTVKeyboard extends BaseKeyboard {
 	keyMap = {
@@ -81,7 +82,6 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 					this.hass.callService('remote', 'sendCommand', {
 						entity_id: this.action.remote_id,
 						command: ['BACK'],
-						delay_secs: 0.4,
 					}),
 				)
 				.then(() => (this.searchReady = true));
