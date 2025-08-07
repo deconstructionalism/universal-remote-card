@@ -86,12 +86,13 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 				})
 				.then(() => {
 					console.log('pressing back');
-					return this.hass.callService('remote', 'sendCommand', {
-						entity_id: this.action.remote_id,
-						command: ['BACK'],
-					}).then(() => (this.searchReady = true));
-				})
-
+					return this.hass
+						.callService('remote', 'sendCommand', {
+							entity_id: this.action.remote_id,
+							command: ['BACK'],
+						})
+						.then(() => (this.searchReady = true));
+				});
 		}
 	}
 }
