@@ -69,7 +69,10 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 					entity_id: this.action.remote_id,
 					command: 'SEARCH',
 				})
-				.then(() => pause(1000))
+				.then(() => {
+					console.log('pausing for 1000');
+					pause(1000);
+				})
 				.then(() =>
 					this.hass.callService('remote', 'send_command', {
 						entity_id: this.action.remote_id,
@@ -77,13 +80,17 @@ export class AndroidTVKeyboard extends BaseKeyboard {
 						delay_secs: 0.4,
 					}),
 				)
-				.then(() => pause(1000))
-				.then(() =>
-					this.hass.callService('remote', 'sendCommand', {
+				.then(() => {
+					console.log('pausing for 1000');
+					pause(1000);
+				})
+				.then(() => {
+					console.log('pressing back');
+					return this.hass.callService('remote', 'sendCommand', {
 						entity_id: this.action.remote_id,
 						command: ['BACK'],
-					}),
-				)
+					});
+				})
 				.then(() => (this.searchReady = true));
 		}
 	}
